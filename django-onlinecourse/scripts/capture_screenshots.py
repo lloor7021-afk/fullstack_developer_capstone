@@ -48,8 +48,12 @@ try:
     driver.find_element(By.CSS_SELECTOR, '.card a.btn.btn-primary').click()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'fieldset[data-question]')))
     for fieldset in driver.find_elements(By.CSS_SELECTOR, 'fieldset[data-question]'):
-        fieldset.find_element(By.CSS_SELECTOR, 'input[type="checkbox"]').click()
-    driver.find_element(By.XPATH, '//button[contains(., "Submit exam")]').click()
+        checkbox = fieldset.find_element(By.CSS_SELECTOR, 'input[type="checkbox"]')
+        driver.execute_script('arguments[0].scrollIntoView({block: "center"});', checkbox)
+        driver.execute_script('arguments[0].click();', checkbox)
+    submit_button = driver.find_element(By.XPATH, '//button[contains(., "Submit exam")]')
+    driver.execute_script('arguments[0].scrollIntoView({block: "center"});', submit_button)
+    driver.execute_script('arguments[0].click();', submit_button)
     wait.until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, '[role="status"]'), 'Congratulations!'))
     if '100%' not in driver.page_source or 'Exam results' not in driver.page_source:
         raise RuntimeError('Expected successful exam score and details were not shown.')
