@@ -1,0 +1,19 @@
+{
+  "name": "ibm-express-book-review-final",
+  "version": "1.0.0",
+  "private": true,
+  "description": "IBM Express Book Review coursework: books, login, JWT, reviews, Axios async/await",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test:evidence": "bash scripts/collect-evidence.sh",
+    "test:async": "node scripts/async-client.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "engines": { "node": ">=18" }
+}

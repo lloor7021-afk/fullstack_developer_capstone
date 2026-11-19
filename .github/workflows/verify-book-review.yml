@@ -1,0 +1,43 @@
+name: Verify Express Book Review
+on:
+  push:
+    paths:
+      - 'express-book-review/**'
+      - '.github/workflows/verify-book-review.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        working-directory: express-book-review/final_project
+        run: npm install --no-audit --no-fund
+      - name: Start server and collect actual cURL output
+        working-directory: express-book-review/final_project
+        run: |
+          node index.js > server.log 2>&1 &
+          echo $! > server.pid
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:5000/isbn/1 > /dev/null; then break; fi
+            sleep 1
+          done
+          bash scripts/collect-evidence.sh
+          grep -q 'User successfully registered' evidence/register
+          grep -q 'User successfully logged in' evidence/login
+          grep -q 'Review added' evidence/reviewadded
+          grep -q 'Review deleted' evidence/deletereview
+          cat evidence/async-axios-output.txt
+          for f in getallbooks getbooksbyISBN getbooksbyauthor getbooksbytitle getbookreview register login reviewadded deletereview; do
+            echo "======== $f ========"
+            cat "evidence/$f"
+          done
+      - name: Upload real terminal evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-book-review-curl-evidence
+          path: express-book-review/final_project/evidence/
+          if-no-files-found: error
