@@ -1,32 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Link, NavLink, Route, Routes } from 'react-router-dom';
-import { selectCartCount } from './CartSlice.jsx';
+import { Link, Route, Routes } from 'react-router-dom';
 import AboutUs from './AboutUs.jsx';
-import ProductList from './ProductList.jsx';
+import ProductList, { Navbar } from './ProductList.jsx';
 import CartItem from './CartItem.jsx';
-
-function Navbar() {
-  const count = useSelector(selectCartCount);
-  return (
-    <header className="site-header">
-      <div className="container nav-inner">
-        <Link to="/" className="brand" aria-label="Paradise Nursery home">
-          <span className="brand-mark" aria-hidden="true">✿</span>
-          <span>paradise<span className="brand-light">nursery</span><span className="brand-dot">.</span></span>
-        </Link>
-        <nav className="nav-links" aria-label="Main navigation">
-          <NavLink to="/" end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Home</NavLink>
-          <NavLink to="/plants" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Plants</NavLink>
-          <NavLink to="/cart" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            <span className="cart-link-text">Cart</span><span className="cart-glyph" aria-hidden="true">▣</span>
-            <span className="cart-badge" aria-label={`${count} items in cart`}>{count}</span>
-          </NavLink>
-        </nav>
-      </div>
-    </header>
-  );
-}
 
 function Home() {
   return (
