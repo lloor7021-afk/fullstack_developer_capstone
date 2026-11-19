@@ -1,0 +1,36 @@
+name: Import IBM capstone starter into student project
+on:
+  push:
+    paths:
+      - '.github/workflows/import-fullstack-capstone.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-starter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch public IBM capstone starter without overwriting submitted edits
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/ibm-developer-skills-network/xrwvm-fullstack_developer_capstone.git /tmp/ibm-capstone
+          mkdir -p fullstack-capstone
+          rsync -a --ignore-existing --exclude=.git/ --exclude=.env --exclude=node_modules/ --exclude=__pycache__/ --exclude=db.sqlite3 /tmp/ibm-capstone/ fullstack-capstone/
+          test -f fullstack-capstone/server/manage.py
+          test -f fullstack-capstone/server/frontend/static/About.html
+          test -f fullstack-capstone/server/frontend/static/Contact.html
+      - name: Commit the import only when changes are present
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add fullstack-capstone/
+          if ! git diff --staged --quiet; then
+            git commit -m "Import IBM capstone base while preserving edited submission files"
+            git push origin HEAD:main
+          else
+            echo "Already up to date"
+          fi
