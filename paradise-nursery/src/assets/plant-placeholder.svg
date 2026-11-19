@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 640" role="img" aria-label="Illustrated potted plant">
+  <rect width="800" height="640" fill="#e9f1e7"/>
+  <ellipse cx="400" cy="542" rx="180" ry="24" fill="#d0ddd1"/>
+  <path d="M395 435V183M402 425C330 331 274 281 213 261M402 405C475 304 527 258 596 237M403 320C353 254 345 198 345 164" fill="none" stroke="#477c56" stroke-width="17" stroke-linecap="round"/>
+  <path d="M391 338C234 336 234 214 319 199c52-8 87 44 72 139Z" fill="#7bac70"/>
+  <path d="M398 341c-12-120 54-187 125-157 51 21 37 121-125 157Z" fill="#5a9465"/>
+  <path d="M381 278c-76-94-45-168 11-177 70 30 44 114-11 177Z" fill="#3d7650"/>
+  <path d="M409 278c37-91 124-118 148-49 12 53-62 78-148 49Z" fill="#8ab980"/>
+  <path d="M313 444h174l-24 113H337Z" fill="#c88a6a"/>
+  <rect x="304" y="426" width="193" height="27" rx="10" fill="#b77a5c"/>
+</svg>
