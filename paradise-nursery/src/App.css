@@ -183,3 +183,8 @@ h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; }
   .cart-line-controls { grid-column: 2; flex-direction: row; align-items: center; justify-content: space-between; }
   .footer-inner { flex-direction: column; text-align: center; gap: 9px; }
 }
+
+/* Each of the three collections has a visible heading and six distinct plants. */
+.plant-category-groups { display: grid; gap: 3.25rem; }
+.plant-category-section { min-width: 0; }
+.category-heading { margin: 0 0 1.25rem; font-size: clamp(1.4rem, 2.6vw, 2rem); font-weight: 700; }
