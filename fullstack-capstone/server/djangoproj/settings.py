@@ -26,9 +26,9 @@ SECRET_KEY =\
     'django-insecure-ccow$tz_=9%dxu4(0%^(z%nx32#s@(zt9$ih@)5l54yny)wm-0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.labs.cognitiveclass.ai', '.codeengine.appdomain.cloud']
 CSRF_TRUSTED_ORIGINS = []
 
 REST_FRAMEWORK = {
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -136,3 +137,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [BASE_DIR / 'frontend' / 'static']
 
+
+TEMPLATES[0]['DIRS'].insert(0, BASE_DIR / 'frontend' / 'build')
+STATICFILES_DIRS.append(BASE_DIR / 'frontend' / 'build' / 'static')
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', SECRET_KEY)
+ALLOWED_HOSTS += [host for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if host]
+CSRF_TRUSTED_ORIGINS += [origin for origin in os.environ.get('DJANGO_CSRF_ORIGINS', '').split(',') if origin]
+if not DEBUG:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

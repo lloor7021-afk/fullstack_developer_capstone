@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
-import './Register.css';
-import Header from '../Header/Header';
+import React, {useState} from "react";
+import Header from "../Header/Header";
 
 export default function Register() {
-  const [userName, setUserName] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  async function submitRegistration(event) {
+  const [error, setError] = useState("");
+  async function submit(event) {
     event.preventDefault();
-    setMessage('Registration requires a configured server registration endpoint.');
+    const data = Object.fromEntries(new FormData(event.target));
+    await fetch("/djangoapp/get_dealers");
+    const token = document.cookie.split("; ").find(c => c.startsWith("csrftoken="))?.split("=")[1];
+    const response = await fetch("/djangoapp/register", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "X-CSRFToken": token},
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    if (!response.ok) { setError(result.error); return; }
+    sessionStorage.setItem("username", result.userName);
+    window.location.href = "/";
   }
-  return <div><Header/><main className="container py-4"><h1>Sign Up</h1>
-    <form onSubmit={submitRegistration}>
-      <label>Username<input className="form-control" required value={userName} onChange={e=>setUserName(e.target.value)} /></label>
-      <label>First Name<input className="form-control" required value={firstName} onChange={e=>setFirstName(e.target.value)} /></label>
-      <label>Last Name<input className="form-control" required value={lastName} onChange={e=>setLastName(e.target.value)} /></label>
-      <label>Email<input className="form-control" required type="email" value={email} onChange={e=>setEmail(e.target.value)} /></label>
-      <label>Password<input className="form-control" required type="password" value={password} onChange={e=>setPassword(e.target.value)} /></label>
-      <button className="btn btn-primary mt-3" type="submit">Register</button>
-    </form><p role="status">{message}</p></main></div>;
+  return <><Header/><main className="container py-4">
+    <h1>Sign Up</h1><p role="alert">{error}</p>
+    <form onSubmit={submit}>
+      <label>Username<input className="form-control" name="userName" required autoComplete="username"/></label><br/>
+      <label>First Name<input className="form-control" name="firstName" required autoComplete="given-name"/></label><br/>
+      <label>Last Name<input className="form-control" name="lastName" required autoComplete="family-name"/></label><br/>
+      <label>Email<input className="form-control" name="email" type="email" required autoComplete="email"/></label><br/>
+      <label>Password<input className="form-control" name="password" type="password" minLength={10} required autoComplete="new-password"/></label><br/>
+      <button className="btn btn-primary" type="submit">Register</button>
+    </form></main></>;
 }

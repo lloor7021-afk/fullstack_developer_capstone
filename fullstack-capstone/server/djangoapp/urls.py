@@ -3,6 +3,10 @@ from . import views
 
 app_name = "djangoapp"
 urlpatterns = [
+    path("register", views.registration),
+    path("get_cars", views.get_cars),
+    path("analyze_review/<path:text>", views.analyze_review),
+    path("add_review", views.add_review),
     path("login", views.login_user),
     path("logout", views.logout_user),
     path("get_dealers", views.get_dealerships),
