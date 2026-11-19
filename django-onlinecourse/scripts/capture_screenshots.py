@@ -38,7 +38,6 @@ try:
     print('Saved authentic admin screenshot:', OUT / '03-admin-site.png')
 
     # Explicitly log out of admin and log in as an ordinary learner.
-    driver.get(BASE + '/admin/logout/')
     driver.delete_all_cookies()
     driver.get(BASE + '/onlinecourse/login/')
     wait.until(EC.visibility_of_element_located((By.NAME, 'username'))).send_keys('student')
@@ -46,7 +45,7 @@ try:
     driver.find_element(By.CSS_SELECTOR, 'button[type=submit], form button').click()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.hero-panel')))
     # Demo course is seeded with 3 questions, with the first choice correct for each.
-    driver.find_element(By.CSS_SELECTOR, 'a[href*="/onlinecourse/"][href$="/"]').click()
+    driver.find_element(By.CSS_SELECTOR, '.card a.btn.btn-primary').click()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'fieldset[data-question]')))
     for fieldset in driver.find_elements(By.CSS_SELECTOR, 'fieldset[data-question]'):
         fieldset.find_element(By.CSS_SELECTOR, 'input[type="checkbox"]').click()
