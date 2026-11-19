@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { removeItem, selectCartCount, selectCartItems, selectCartTotal, updateQuantity } from './CartSlice.jsx';
+import { removeItem, selectCartCount, selectCartItems, updateQuantity } from './CartSlice.jsx';
 import placeholder from './assets/plant-placeholder.svg';
 
 const money = (amount) => `${amount.toFixed(2)}`;
@@ -12,8 +12,7 @@ export default function CartItem() {
   const dispatch = useDispatch();
   const items = useSelector(selectCartItems);
   const itemCount = useSelector(selectCartCount);
-  const reduxCartTotal = useSelector(selectCartTotal);
-  const cartTotal = calculateTotalAmount(items); // Same total as the Redux selector.
+  const cartTotal = calculateTotalAmount(items);
   const [checkoutMessage, setCheckoutMessage] = useState('');
 
   function adjustQuantity(id, change) {
