@@ -1,0 +1,29 @@
+name: Verify Kubernetes Guestbook Source
+on:
+  push:
+    paths:
+      - 'kubernetes-guestbook/**'
+      - '.github/workflows/verify-kubernetes-guestbook.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [v1, v2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Compile Go server
+        run: go build -o /tmp/guestbook main.go
+        working-directory: kubernetes-guestbook/${{ matrix.version }}/guestbook
+      - name: Confirm matching HTML title and heading
+        run: |
+          grep -q "<title>Guestbook - ${{ matrix.version }}</title>" public/index.html
+          grep -q "<h1>Guestbook - ${{ matrix.version }}</h1>" public/index.html
+        working-directory: kubernetes-guestbook/${{ matrix.version }}/guestbook
+      - name: Build Docker image
+        run: docker build -t guestbook:${{ matrix.version }} .
+        working-directory: kubernetes-guestbook/${{ matrix.version }}/guestbook
