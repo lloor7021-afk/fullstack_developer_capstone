@@ -1,0 +1,27 @@
+name: Verify Microservices Price Comparison
+on:
+  push:
+    paths:
+      - 'microservices-price-comparison/**'
+      - '.github/workflows/verify-microservices.yml'
+  workflow_dispatch:
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - backend/products_list
+          - backend/dealer_details
+          - frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python / JavaScript / JSON
+        run: |
+          python3 -m py_compile microservices-price-comparison/backend/products_list/app.py microservices-price-comparison/frontend/app.py
+          node --check microservices-price-comparison/backend/dealer_details/server.js
+          python3 -m json.tool microservices-price-comparison/backend/products_list/products.json > /dev/null
+          python3 -m json.tool microservices-price-comparison/backend/dealer_details/utils/dealers.json > /dev/null
+      - name: Build service container
+        run: docker build --progress=plain -t microservices-test:${{ strategy.job-index }} microservices-price-comparison/${{ matrix.service }}
