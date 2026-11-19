@@ -7,7 +7,8 @@ const Header = () => {
     e.preventDefault();
     let logout_url = window.location.origin+"/djangoapp/logout";
     const res = await fetch(logout_url, {
-      method: "GET",
+      method: "POST",
+      headers: {"X-CSRFToken": document.cookie.split("; ").find(cookie => cookie.startsWith("csrftoken="))?.split("=")[1]},
     });
   
     const json = await res.json();
