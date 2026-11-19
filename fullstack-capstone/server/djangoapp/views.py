@@ -82,7 +82,7 @@ def registration(request):
         validate_email(fields["email"])
         candidate = User(username=fields["userName"], email=fields["email"],
                          first_name=fields["firstName"], last_name=fields["lastName"])
-        candidate.full_clean(validate_unique=False)
+        candidate.full_clean(exclude=["password"], validate_unique=False)
         validate_password(password, candidate)
         user = User.objects.create_user(
             username=fields["userName"], password=password, email=fields["email"],
