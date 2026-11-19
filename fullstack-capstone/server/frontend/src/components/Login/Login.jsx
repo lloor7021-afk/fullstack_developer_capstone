@@ -14,10 +14,12 @@ const Login = ({ onClose }) => {
   const login = async (e) => {
     e.preventDefault();
 
+    await fetch("/djangoapp/get_dealers");
     const res = await fetch(login_url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "X-CSRFToken": document.cookie.split("; ").find(cookie => cookie.startsWith("csrftoken="))?.split("=")[1],
         },
         body: JSON.stringify({
             "userName": userName,
