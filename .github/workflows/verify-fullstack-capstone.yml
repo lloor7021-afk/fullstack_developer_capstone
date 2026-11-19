@@ -1,0 +1,34 @@
+name: Verify Full Stack Capstone
+on:
+  push:
+    paths:
+      - 'fullstack-capstone/**'
+      - '.github/workflows/verify-fullstack-capstone.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: fullstack-capstone/server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Django dependencies
+        run: pip install -r requirements.txt
+      - name: Build React
+        working-directory: fullstack-capstone/server/frontend
+        run: npm ci && CI=false npm run build
+      - name: Check Django and verify dealership APIs
+        run: |
+          python manage.py check
+          python manage.py migrate --noinput
+          python manage.py seed_cars
+          python manage.py shell -c "from django.test import Client; c=Client(HTTP_HOST='localhost'); assert len(c.get('/djangoapp/get_dealers').json()['dealers']) == 50; assert c.get('/djangoapp/get_cars').json()['carModels']; assert c.get('/djangoapp/analyze_review/Fantastic%20services').json()['sentiment'] == 'positive'"
