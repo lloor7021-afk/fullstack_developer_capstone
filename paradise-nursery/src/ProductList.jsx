@@ -1,11 +1,35 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { addItem, selectCartItems } from './CartSlice.jsx';
+import { Link, NavLink } from 'react-router-dom';
+import { addItem, selectCartCount, selectCartItems } from './CartSlice.jsx';
 import { categories, plants } from './data/plants.js';
 import placeholder from './assets/plant-placeholder.svg';
 
-function ProductCard({ plant, inCart, onAdd }) {
+// Shared navigation is declared here and displayed by App on Home, Plants and Cart.
+export function Navbar() {
+  const count = useSelector(selectCartCount);
+  return (
+    <header className="site-header">
+      <div className="container nav-inner">
+        <Link to="/" className="brand" aria-label="Paradise Nursery home">
+          <span className="brand-mark" aria-hidden="true">✿</span>
+          <span>paradise<span className="brand-light">nursery</span><span className="brand-dot">.</span></span>
+        </Link>
+        <nav className="navbar nav-links" aria-label="Main navigation">
+          <NavLink to="/" end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Home</NavLink>
+          <NavLink to="/plants" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Plants</NavLink>
+          <NavLink to="/cart" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            <span className="cart-link-text">Cart</span><span className="cart-glyph" aria-hidden="true">▣</span>
+            <span className="cart-badge" aria-label={`${count} items in cart`}>{count}</span>
+          </NavLink>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function ProductCard({ plant, addedToCart, onAdd }) {
+  const inCart = Boolean(addedToCart[plant.name]);
   return (
     <article className="plant-card">
       <div className="plant-image-wrap">
@@ -29,7 +53,7 @@ function ProductCard({ plant, inCart, onAdd }) {
           type="button"
           className={`button button-add ${inCart ? 'is-added' : ''}`}
           onClick={() => onAdd(plant)}
-          disabled={inCart}
+          disabled={addedToCart[plant.name] === true}
           aria-label={inCart ? `${plant.name} already added to cart` : `Add ${plant.name} to cart`}
         >
           {inCart ? '✓ Added to cart' : '+ Add to Cart'}
@@ -45,7 +69,7 @@ export default function ProductList() {
   const [category, setCategory] = useState('All Plants');
   const [search, setSearch] = useState('');
   const [notice, setNotice] = useState('');
-  const cartIds = new Set(cartItems.map((item) => item.id));
+  const addedToCart = Object.fromEntries(cartItems.map((item) => [item.name, true]));
 
   const filteredPlants = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -110,15 +134,26 @@ export default function ProductList() {
           </div>
         )}
         {filteredPlants.length > 0 ? (
-          <div className="plant-grid">
-            {filteredPlants.map((plant) => (
-              <ProductCard
-                key={plant.id}
-                plant={plant}
-                inCart={cartIds.has(plant.id)}
-                onAdd={handleAdd}
-              />
-            ))}
+          <div className="plant-category-groups">
+            {categories.map((categoryName) => {
+              const categoryPlants = filteredPlants.filter((plant) => plant.category === categoryName);
+              if (categoryPlants.length === 0) return null;
+              return (
+                <section key={categoryName} className="plant-category-section">
+                  <h3 className="category-heading">{categoryName}</h3>
+                  <div className="plant-grid">
+                    {categoryPlants.map((plant) => (
+                      <ProductCard
+                        key={plant.id}
+                        plant={plant}
+                        addedToCart={addedToCart}
+                        onAdd={handleAdd}
+                      />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
           </div>
         ) : (
           <div className="empty-results">
