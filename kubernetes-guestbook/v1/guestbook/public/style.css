@@ -1,0 +1,8 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; background: #f1f7f2; color: #203b2c; }
+.container { max-width: 720px; margin: 10vh auto; background: white; padding: 2.5rem; border-radius: 18px; box-shadow: 0 4px 26px #183c2620; }
+h1 { font-size: 2.25rem; margin-top: 0; }
+form { display: grid; gap: .6rem; }
+input { padding: .8rem; border: 1px solid #9bb8a1; border-radius: 8px; }
+button { padding: .8rem 1.5rem; width: fit-content; background: #246e43; color: white; border: 0; border-radius: 8px; cursor: pointer; }
+#guestbook-entries p { padding: .7rem; border-bottom: 1px solid #e6ede7; }

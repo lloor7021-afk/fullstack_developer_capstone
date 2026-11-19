@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guestbook - v1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Guestbook - v1</h1>
+    <p>Leave a message in the guestbook.</p>
+    <form id="guestbook-form">
+      <label for="guestbook-entry-content">Message</label>
+      <input id="guestbook-entry-content" type="text" autocomplete="off" required maxlength="250" placeholder="Write your message">
+      <button id="guestbook-submit" type="submit">Submit</button>
+    </form>
+    <div id="guestbook-entries" aria-live="polite"></div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
