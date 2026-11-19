@@ -1,0 +1,27 @@
+{% extends 'onlinecourse/base.html' %}
+{% block title %}Exam results{% endblock %}
+{% block content %}
+<a class="text-decoration-none small" href="{% url 'onlinecourse:course_details' course.id %}">← Back to course</a>
+<div class="card mt-4 mb-4"><div class="card-body p-5">
+  <div class="muted-label">EXAM ASSESSMENT · {{ course.name }}</div>
+  {% if passed %}
+  <div class="alert alert-success border-0 mt-3" role="status"><h1 class="fs-2 fw-bold mb-2">🎉 Congratulations! You passed.</h1><p class="mb-0">You successfully completed the mock exam. Great work!</p></div>
+  {% else %}
+  <div class="alert alert-danger border-0 mt-3" role="status"><h1 class="fs-2 fw-bold mb-2">Keep practicing!</h1><p class="mb-0">Review your answers and try again to reach 70%.</p></div>
+  {% endif %}
+  <div class="row gy-3 align-items-center mt-3"><div class="col-sm-4"><span class="text-secondary fw-semibold">YOUR SCORE</span><div style="font-size:4.5rem;font-weight:800;line-height:1.2;color:{% if passed %}#25835b{% else %}#bd3747{% endif %}">{{ grade }}%</div></div>
+    <div class="col-sm-8"><p class="h5 mb-2">{{ total_score }} / {{ total_grade }} points</p><div class="progress" style="height:13px"><div class="progress-bar bg-success" style="width:{{ grade }}%"></div></div><p class="text-secondary small mt-2 mb-0">A score of 70% or above is required to pass.</p></div>
+  </div>
+</div></div>
+<h2 class="heading fs-3 mb-3">Exam results</h2>
+{% for row in results %}<div class="card mb-3"><div class="card-body p-4">
+ <div class="d-flex justify-content-between gap-3 flex-wrap align-items-start"><div><span class="muted-label">QUESTION {{ forloop.counter }}</span><h3 class="fs-5 mt-2 fw-bold">{{ row.question.content }}</h3></div>
+ <span class="badge rounded-pill {% if row.correct %}text-bg-success{% else %}text-bg-danger{% endif %}">{% if row.correct %}✓ Correct · {{ row.question.grade }} pts{% else %}✕ Incorrect · 0 pts{% endif %}</span></div>
+ <ul class="list-unstyled mb-0 mt-3">{% for entry in row.choices %}<li class="py-1">
+ {% if entry.choice.is_correct %}<span class="text-success fw-semibold">✓ {{ entry.choice.content }}</span>
+ {% elif entry.selected %}<span class="text-danger">✕ {{ entry.choice.content }} (your choice)</span>
+ {% else %}<span class="text-secondary">○ {{ entry.choice.content }}</span>{% endif %}
+ {% if entry.selected and entry.choice.is_correct %}<small class="text-secondary"> (your choice)</small>{% endif %}</li>{% endfor %}</ul>
+</div></div>{% endfor %}
+<a class="btn btn-primary mt-2" href="{% url 'onlinecourse:course_details' course.id %}#assessment">Return to course</a>
+{% endblock %}

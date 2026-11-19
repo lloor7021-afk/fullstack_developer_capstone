@@ -1,0 +1,55 @@
+name: Verify Django Online Course
+on:
+  push:
+    paths:
+      - 'django-onlinecourse/**'
+      - '.github/workflows/verify-django-onlinecourse.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-and-screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Django and screenshot dependencies
+        working-directory: django-onlinecourse
+        run: pip install -r requirements.txt
+      - name: Create database and demo content
+        working-directory: django-onlinecourse
+        env:
+          DEMO_ADMIN_PASSWORD: ${{ secrets.DEMO_ADMIN_PASSWORD || 'temporary-ci-admin-only-2026' }}
+          DEMO_STUDENT_PASSWORD: ${{ secrets.DEMO_STUDENT_PASSWORD || 'temporary-ci-student-only-2026' }}
+        run: |
+          python manage.py makemigrations onlinecourse --noinput
+          python manage.py migrate --noinput
+          python manage.py seed_demo
+          python manage.py check
+      - name: Run functional tests
+        working-directory: django-onlinecourse
+        run: python manage.py test -v 2
+      - name: Start Django and capture actual screenshots in browser
+        working-directory: django-onlinecourse
+        env:
+          DEMO_ADMIN_PASSWORD: ${{ secrets.DEMO_ADMIN_PASSWORD || 'temporary-ci-admin-only-2026' }}
+          DEMO_STUDENT_PASSWORD: ${{ secrets.DEMO_STUDENT_PASSWORD || 'temporary-ci-student-only-2026' }}
+        run: |
+          python manage.py runserver 127.0.0.1:8000 --noreload > django.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8000/onlinecourse/ >/dev/null; then break; fi
+            sleep 1
+          done
+          python scripts/capture_screenshots.py
+          test -s evidence/03-admin-site.png
+          test -s evidence/07-final.png
+      - name: Upload authentic screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: django-onlinecourse-actual-screenshots
+          path: |
+            django-onlinecourse/evidence/03-admin-site.png
+            django-onlinecourse/evidence/07-final.png
+          if-no-files-found: error

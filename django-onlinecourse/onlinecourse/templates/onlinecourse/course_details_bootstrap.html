@@ -1,0 +1,36 @@
+{% extends 'onlinecourse/base.html' %}
+{% block title %}{{ course.name }}{% endblock %}
+{% block content %}
+<a href="{% url 'onlinecourse:index' %}" class="text-decoration-none small">← Back to courses</a>
+<div class="hero-panel mt-4 mb-4"><span class="muted-label" style="color:#ccd6fb">ONLINE LEARNING · COURSE OVERVIEW</span>
+<h1 class="display-6 fw-bold mt-3 mb-2">{{ course.name }}</h1><p class="mb-0" style="color:#dce3ff">{{ course.description }}</p></div>
+<div class="row gy-4">
+<section class="col-lg-12">
+<h2 class="heading fs-3 mb-3">Your lessons</h2>
+{% for lesson in lessons %}
+<article class="card mb-3"><div class="card-body p-4">
+  <span class="muted-label">LESSON {{ lesson.order|add:1 }}</span>
+  <h3 class="h5 fw-bold mt-2">{{ lesson.title }}</h3>
+  <p class="text-secondary mb-0">{{ lesson.content|linebreaksbr }}</p>
+</div></article>
+{% endfor %}
+</section>
+<section class="col-12"><div class="card" id="assessment"><div class="card-body p-4 p-md-5">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4"><div>
+    <span class="muted-label">FINAL ASSESSMENT</span><h2 class="heading fs-3 mt-2 mb-0">Check your understanding</h2>
+  </div><span class="soft-badge">Passing score: 70%</span></div>
+  {% if not user.is_authenticated %}<p>Please log in before attempting the assessment.</p><a class="btn btn-primary" href="{% url 'onlinecourse:login' %}">Log in to continue</a>
+  {% elif not enrolled %}<p>Enroll in this course to take the exam.</p><form method="post" action="{% url 'onlinecourse:enroll' course.pk %}">{% csrf_token %}<button class="btn btn-primary">Enroll in course</button></form>
+  {% else %}<form action="{% url 'onlinecourse:submit' course.id %}" method="post">{% csrf_token %}
+    {% for lesson in lessons %}{% for question in lesson.questions.all %}
+    <fieldset class="mb-4" data-question="{{ question.id }}"><legend class="h5 fw-bold mb-2">{{ forloop.parentloop.counter }}. {{ question.content }}</legend>
+    <div class="text-secondary small mb-2">{{ question.grade }} points · Select the correct choice{% if question.choices.count > 2 %}(s){% endif %}</div>
+    {% for choice in question.choices.all %}
+    <label class="form-check d-block"><input class="form-check-input" type="checkbox" name="choice_{{ question.id }}" value="{{ choice.id }}"><span class="form-check-label">{{ choice.content }}</span></label>
+    {% endfor %}</fieldset>
+    {% endfor %}{% endfor %}
+    <button class="btn btn-primary btn-lg px-4" type="submit">Submit exam →</button>
+  </form>{% endif %}
+</div></div></section>
+</div>
+{% endblock %}
