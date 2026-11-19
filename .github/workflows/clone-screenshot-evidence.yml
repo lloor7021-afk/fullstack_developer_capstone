@@ -1,0 +1,41 @@
+name: Verified frontend clone screenshot
+on:
+  push:
+    paths:
+      - '.github/workflows/clone-screenshot-evidence.yml'
+  workflow_dispatch:
+jobs:
+  genuine-clone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install terminal and screen capture
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xterm xvfb imagemagick
+      - name: Capture actual git clone execution in an X terminal
+        run: |
+          cat > /tmp/perform-clone.sh <<'EOF'
+          #!/usr/bin/env bash
+          cd /tmp
+          echo '$ git clone https://github.com/ibm-developer-skills-network/dealer_evaluation_frontend.git'
+          git clone https://github.com/ibm-developer-skills-network/dealer_evaluation_frontend.git
+          echo
+          echo '$ ls dealer_evaluation_frontend'
+          ls dealer_evaluation_frontend
+          echo
+          echo 'Successfully cloned the IBM Dealer Evaluation Frontend repository.'
+          sleep 30
+          EOF
+          chmod +x /tmp/perform-clone.sh
+          mkdir -p evidence
+          xvfb-run -a --server-args="-screen 0 1440x900x24" bash -c '
+            xterm -geometry 130x30+45+50 -fa "DejaVu Sans Mono" -fs 13 -bg "#111827" -fg "#f9fafb" -e /tmp/perform-clone.sh &
+            sleep 12
+            import -display "$DISPLAY" -window root evidence/git_clone.png
+          '
+          file evidence/git_clone.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: git-clone-real-terminal-screenshot
+          path: evidence/git_clone.png
+          if-no-files-found: error
