@@ -1,37 +1,56 @@
-# fullstack_developer_capstone
+# Full Stack Application Development Capstone Project
 
-## Project Name: Full Stack Application Development Capstone Project — Best Cars Dealership Reviews
+Best Cars Dealership Reviews — IBM Skills Network / Coursera.
 
-**Course-required repository name:** `fullstack_developer_capstone`  
-**Current containing repository:** `github-final-project` (project under `fullstack-capstone/`).
+This public repository is named `fullstack_developer_capstone`, as required by the course. The completed application is under `fullstack-capstone/server/`. It was copied from the latest corrected project in `lloor7021-afk/github-final-project`; the original repository is retained.
 
-**Note:** The course grader requires a GitHub repository *named* `fullstack_developer_capstone`; including this name in this README alone does not meet that repository-name requirement.
-**Project:** Full Stack Application Development Capstone Project (Car Dealership Reviews)
-**Student submission:** IBM Skills Network / Coursera
+## Application
 
-Django backend, React frontend and dealership/review APIs based on the IBM Skills Network full stack capstone starter project.
+- Django authentication, registration, logout, admin, and review storage.
+- React dealership listing, state filter, dealer details, review form, and sentiment icons.
+- Dataset: 50 dealers, 5 car makes, and 110 car models.
+- VADER sentiment endpoint for review text.
+- GitHub Actions: Python Lint and React Lint, each with Install dependencies and Run Linter.
+- Multi-stage Docker build for IBM Cloud Code Engine.
 
-Source code is in `fullstack-capstone/server/`.
+## Run locally
 
-## Local development
 ```bash
 cd fullstack-capstone/server
+python -m venv .venv
+. .venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
+python manage.py seed_cars
+cd frontend
+npm ci
+npm run build
+cd ..
 python manage.py runserver
 ```
 
-This GitHub source code is **not proof of production deployment**. Live Code Engine URL and screenshots must come from an actual successful deployment.
+Create the course admin account interactively with `python manage.py createsuperuser --username root`. Keep credentials out of git.
 
-## Coursework routes
-- `/djangoapp/get_dealers`, `/fetchDealers`, and `/fetchDealers/Kansas`
+## Coursework API routes
+
+- `/fetchDealers`
+- `/fetchDealers/Kansas`
 - `/djangoapp/dealer/15`
 - `/djangoapp/reviews/dealer/15`
-- `/djangoapp/login` and `/djangoapp/logout` (GET supported for the course cURL demonstration)
-- `/about`, `/contact`, `/`
+- `/djangoapp/get_cars`
+- `/analyze/Fantastic%20services`
+- `/djangoapp/register`, `/djangoapp/login`, `/djangoapp/logout`
 
-Upstream IBM starter: https://github.com/ibm-developer-skills-network/xrwvm-fullstack_developer_capstone
+GET logout is supported for the course cURL demonstration. POST requests require the Django CSRF cookie and header. HTTPS cURL POST requests also send a same-origin Referer.
 
-## Automated lint workflow
+## Code Engine
 
-The GitHub Actions workflow `.github/workflows/fullstack-lint.yml` includes Python Lint and React Lint jobs, each with Install dependencies and Run Linter steps. Only a **green successful completed run** qualifies as evidence for Task 23 (Coursera Question 22). GitHub Actions build logs are not a substitute.
+Public application: https://fullstack-capstone.2hdtxqm90q23.us-south.codeengine.appdomain.cloud/
+
+Build context: `fullstack-capstone/server`. Dockerfile builds React and serves Django with Gunicorn and WhiteNoise on port 8080. SQLite user/review data is instance-local and may reset when the application revision is replaced; this course deployment uses one instance.
+
+## Starter and license
+
+IBM starter: https://github.com/ibm-developer-skills-network/xrwvm-fullstack_developer_capstone
+
+See the repository license.
