@@ -20,9 +20,9 @@ const Dealer = () => {
   let root_url = curr_url.substring(0,curr_url.indexOf("dealer"));
   let params = useParams();
   let id =params.id;
-  let dealer_url = root_url+`djangoapp/dealer/${id}`;
-  let reviews_url = root_url+`djangoapp/reviews/dealer/${id}`;
-  let post_review = root_url+`postreview/${id}`;
+  let dealer_url = `/djangoapp/dealer/${id}`;
+  let reviews_url = `/djangoapp/reviews/dealer/${id}`;
+  let post_review = `/postreview/${id}`;
   
   const get_dealer = async ()=>{
     const res = await fetch(dealer_url, {
@@ -31,8 +31,7 @@ const Dealer = () => {
     const retobj = await res.json();
     
     if(retobj.status === 200) {
-      let dealerobjs = Array.from(retobj.dealer)
-      setDealer(dealerobjs[0])
+      setDealer(Array.isArray(retobj.dealer) ? retobj.dealer[0] : retobj.dealer)
     }
   }
 
@@ -80,7 +79,7 @@ return(
       ):  unreviewed === true? <div>No reviews yet! </div> :
       reviews.map(review => (
         <div className='review_panel'>
-          <img src={senti_icon(review.sentiment)} className="emotion_icon" alt='Sentiment'/>
+          <img src={senti_icon(review.sentiment)} className="emotion_icon" alt={`Sentiment: ${review.sentiment}`} title={`Sentiment: ${review.sentiment}`} style={{width:"36px",height:"36px",display:"inline-block"}}/>
           <div className='review'>{review.review}</div>
           <div className="reviewer">{review.name} {review.car_make} {review.car_model} {review.car_year}</div>
         </div>
