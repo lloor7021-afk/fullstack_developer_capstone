@@ -3,6 +3,10 @@ from . import views
 
 app_name = "djangoapp"
 urlpatterns = [
+    # Rubric-compatible aliases; existing endpoints remain available.
+    path("fetchDealers", views.get_dealerships),
+    path("fetchDealers/<str:state>", views.get_dealerships),
+    path("analyze/<path:text>", views.analyze_review),
     path("register", views.registration),
     path("get_cars", views.get_cars),
     path("analyze_review/<path:text>", views.analyze_review),
