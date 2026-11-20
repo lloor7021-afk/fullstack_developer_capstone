@@ -17,9 +17,14 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
+from djangoapp import views as capstone_views
 from django.conf import settings
 
 urlpatterns = [
+    # Public-compatible endpoints expected by the Coursera rubric.
+    path('fetchDealers', capstone_views.get_dealerships),
+    path('fetchDealers/<str:state>', capstone_views.get_dealerships),
+    path('analyze/<path:text>', capstone_views.analyze_review),
     path('admin/', admin.site.urls),
     path('djangoapp/', include('djangoapp.urls')),
     path('about', TemplateView.as_view(template_name='About.html')),
