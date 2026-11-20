@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useParams, useSearchParams} from "react-router-dom";
 import Header from "./components/Header/Header";
+import positiveIcon from "./components/assets/positive.png";
+import neutralIcon from "./components/assets/neutral.png";
+import negativeIcon from "./components/assets/negative.png";
 
 export function Dealers() {
   const [dealers, setDealers] = useState([]);
@@ -41,7 +44,17 @@ export function Dealer() {
     {dealer&&<><h1>{dealer.full_name}</h1><p>{dealer.address}, {dealer.city}, {dealer.state} {dealer.zip}</p>
       {sessionStorage.getItem("username")&&<a className="btn btn-primary" href={"/review/"+id}>Review Dealer</a>}</>}
     <h2 className="mt-4">Customer reviews</h2>
-    {reviews.map((r,i)=><article className="card p-3 mb-3" key={i}><h3>{r.name}</h3><p>{r.review}</p><small>{r.car_make} {r.car_model} {r.car_year} · {r.purchase_date}</small></article>)}
+    {reviews.map((r,i)=><article className="card p-3 mb-3" key={r.id || i}>
+      <div className="d-flex align-items-center gap-2">
+        <img src={r.sentiment === "positive" ? positiveIcon : r.sentiment === "negative" ? negativeIcon : neutralIcon}
+          alt={(r.sentiment || "neutral") + " sentiment icon"}
+          title={(r.sentiment || "neutral") + " sentiment"}
+          style={{width: "40px", height: "40px", objectFit: "contain"}}/>
+        <h3 className="mb-0">{r.name}</h3>
+      </div>
+      <p>{r.review}</p>
+      <small>{r.car_make} {r.car_model} {r.car_year} · {r.purchase_date}</small>
+    </article>)}
   </main></>;
 }
 
