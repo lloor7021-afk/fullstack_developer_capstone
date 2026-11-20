@@ -1,7 +1,57 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About Us | Dealership Portal</title><link rel="stylesheet" href="/static/bootstrap.min.css"><link rel="stylesheet" href="/static/style.css"></head>
-<body><nav class="nav bg-light p-3"><a class="nav-link" href="/">Home</a><a class="nav-link active" aria-current="page" href="/about">About Us</a><a class="nav-link" href="/contact">Contact Us</a></nav>
-<main class="container py-4"><h1>About Us</h1><p>Browse dealership branches and share your experience with other drivers.</p>
-<div class="row g-3"><div class="col"><article class="card p-3"><img width="96" src="/static/person.png" alt="Team member profile photo"><h2>Maya Reed</h2><p>Customer Experience Lead — helps customers find the right dealership.</p><a href="mailto:maya@example.com">maya@example.com</a></article></div>
-<div class="col"><article class="card p-3"><img width="96" src="/static/person.png" alt="Team member profile photo"><h2>Jordan Lee</h2><p>Branch Support Lead — coordinates services and branch information.</p><a href="mailto:jordan@example.com">jordan@example.com</a></article></div></div></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Best Cars Dealership</title>
+  <!-- Both required stylesheets, served by Django staticfiles -->
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .team-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin-top:24px }
+    .team-member { padding:20px;border:1px solid #dce4e9;border-radius:12px;background:#fff }
+    .team-member img { width:145px;height:145px;object-fit:cover;border-radius:50%;margin-bottom:14px }
+    .team-member h2 { font-size:1.35rem }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="/">Best Cars Dealership</a>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link active" aria-current="page" href="/about">About Us</a>
+        <a class="nav-link" href="/contact">Contact Us</a>
+      </div>
+    </div>
+  </nav>
+  <main class="container py-4">
+    <h1>About Us</h1>
+    <p>Best Cars Dealership connects customers with trusted car dealerships across the United States. Our dealership directory lets visitors explore local dealerships, compare customer experiences, read authentic dealer reviews, and share their own feedback after visiting a branch. We focus on clear information, responsive service, and an easy car-shopping experience.</p>
+    <h2>Meet Our Team</h2>
+    <div class="team-grid">
+      <article class="team-member">
+        <img src="https://i.pravatar.cc/180?img=47" alt="Portrait photo of Maya Reed">
+        <h2>Maya Reed</h2>
+        <p><strong>Customer Experience Manager</strong></p>
+        <p>Maya works with customers to understand their needs and improve the dealer review experience.</p>
+        <p>Email: <a href="mailto:maya@example.com">maya@example.com</a></p>
+      </article>
+      <article class="team-member">
+        <img src="https://i.pravatar.cc/180?img=12" alt="Portrait photo of Jordan Lee">
+        <h2>Jordan Lee</h2>
+        <p><strong>Dealership Relations Coordinator</strong></p>
+        <p>Jordan keeps dealership listings accurate and helps branches stay connected with shoppers.</p>
+        <p>Email: <a href="mailto:jordan@example.com">jordan@example.com</a></p>
+      </article>
+      <article class="team-member">
+        <img src="https://i.pravatar.cc/180?img=49" alt="Portrait photo of Taylor Morgan">
+        <h2>Taylor Morgan</h2>
+        <p><strong>Technical Support Specialist</strong></p>
+        <p>Taylor supports the online platform and makes browsing and submitting reviews easier.</p>
+        <p>Email: <a href="mailto:taylor@example.com">taylor@example.com</a></p>
+      </article>
+    </div>
+  </main>
+</body>
+</html>
